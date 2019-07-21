@@ -4,14 +4,17 @@ import com.example.moviemvppattern.model.Movie;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class MovieListPresenter implements MovieListContract.Presenter, MovieListContract.Model.OnFinishedListener {
 
     private MovieListContract.View movieListView;
-    private MovieListContract.Model movieListModel;
+    private MovieListModel movieListModel;
 
-    public MovieListPresenter(MovieListContract.View movieListView) {
+    @Inject
+    public MovieListPresenter(MovieListModel movieListModel, MovieListContract.View movieListView) {
         this.movieListView = movieListView;
-        movieListModel = new MovieListModel();
+        this.movieListModel = movieListModel;
     }
 
     @Override

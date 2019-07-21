@@ -17,13 +17,19 @@ import com.example.moviemvppattern.model.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.internal.DaggerCollections;
+
 public class MovieListActivity extends AppCompatActivity implements MovieListContract.View {
 
     private static final String TAG = "MovieListActivity";
     private List<Movie> moviesList;
     private MoviesAdapter adapter;
-    private MovieListPresenter movieListPresenter;
     private ProgressBar pbLoading;
+
+    @Inject
+    MovieListPresenter movieListPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +42,10 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
         initUI();
 
         //Initializing presenter
-        movieListPresenter = new MovieListPresenter(this);
+        DaggerMovieListComponent.builder()
+                .movieListPresenterModule(new MovieListPresenterModule(this, new MovieListModel()))
+                .build()
+                .inject(this);
 
         movieListPresenter.requestDataFromServer();
     }
