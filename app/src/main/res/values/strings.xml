@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">movie(MVP pattern)</string>
+    <string name="communication_error">Error in getting data. Please try again later.</string>
+</resources>
