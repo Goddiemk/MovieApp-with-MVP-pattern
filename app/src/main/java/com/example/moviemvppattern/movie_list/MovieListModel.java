@@ -4,17 +4,17 @@ import android.util.Log;
 
 import com.example.moviemvppattern.model.MoviesResponse;
 import com.example.moviemvppattern.model.Movie;
-import com.example.moviemvppattern.network.ApiClient;
-import com.example.moviemvppattern.network.ApiInterface;
-
-import java.util.List;
+import com.example.moviemvppattern.network.ApiService;
 
 import static com.example.moviemvppattern.network.ApiClient.API_KEY;
 import static com.example.moviemvppattern.network.ApiClient.LANGUAGE;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.List;
+
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MovieListModel implements MovieListContract.Model {
 
@@ -22,22 +22,28 @@ public class MovieListModel implements MovieListContract.Model {
 
     @Override
     public void getMovieList(final OnFinishedListener onFinishedListener) {
-        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+        ApiService.getApiService()
+                .getPopularMovies(API_KEY, LANGUAGE, 1)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new SingleObserver<MoviesResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        Call<MoviesResponse> call = apiService.getPopularMovies(API_KEY, LANGUAGE, 1);
-        call.enqueue(new Callback<MoviesResponse>() {
-            @Override
-            public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
-                List<Movie> movies = response.body().getMovies();
-                Log.d(TAG, "Number of movies received: " + movies.size());
-                onFinishedListener.onFinished(movies);
-            }
+                    }
 
-            @Override
-            public void onFailure(Call<MoviesResponse> call, Throwable t) {
-                Log.e(TAG, t.toString());
-                onFinishedListener.onFailure(t);
-            }
-        });
+                    @Override
+                    public void onSuccess(MoviesResponse moviesResponse) {
+                        List<Movie> movies = moviesResponse.getMovies();
+                        Log.d(TAG, "Number of movies received: " + movies.size());
+                        onFinishedListener.onFinished(movies);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.toString());
+                        onFinishedListener.onFailure(e);
+                    }
+                });
     }
 }
