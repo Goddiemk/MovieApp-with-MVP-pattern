@@ -1,19 +1,18 @@
 package com.example.moviemvppattern.movie_list;
 
 import com.example.moviemvppattern.model.Movie;
+import com.example.moviemvppattern.model.MoviesResponse;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 public interface MovieListContract {
+
     interface Model {
 
-        interface OnFinishedListener {
-            void onFinished(List<Movie> movies);
+        Single<MoviesResponse> getMovieList();
 
-            void onFailure(Throwable t);
-        }
-
-        void getMovieList(OnFinishedListener onFinishedListener);
     }
 
     interface View {

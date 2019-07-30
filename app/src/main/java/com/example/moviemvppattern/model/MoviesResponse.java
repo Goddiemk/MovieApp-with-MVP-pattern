@@ -22,6 +22,13 @@ public class MoviesResponse {
     @Expose
     private int totalPages;
 
+    public MoviesResponse(int page, int totalResults, int totalPages, List<Movie> movies) {
+        this.page = page;
+        this.totalResults = totalResults;
+        this.totalPages = totalPages;
+        this.movies = movies;
+    }
+
     public int getPage() {
         return page;
     }

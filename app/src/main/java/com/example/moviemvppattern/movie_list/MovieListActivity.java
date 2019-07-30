@@ -19,8 +19,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import dagger.internal.DaggerCollections;
-
 public class MovieListActivity extends AppCompatActivity implements MovieListContract.View {
 
     private static final String TAG = "MovieListActivity";
